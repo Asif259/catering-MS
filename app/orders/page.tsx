@@ -156,16 +156,16 @@ export default function OrdersPage() {
                       <div className="flex justify-end gap-4 mt-4">
                         <Button
                           variant="outline"
-                          onClick={() => handleCancelOrder(order.id)}
-                          disabled={processingOrder === order.id}
+                          onClick={() => handleCancelOrder(String(order.id))}
+                          disabled={processingOrder === String(order.id)}
                         >
-                          {processingOrder === order.id ? "Cancelling..." : "Cancel Order"}
+                          {processingOrder === String(order.id) ? "Cancelling..." : "Cancel Order"}
                         </Button>
                         <Button
-                          onClick={() => handlePayNow(order.id)}
-                          disabled={processingOrder === order.id}
+                          onClick={() => handlePayNow(String(order.id))}
+                          disabled={processingOrder === String(order.id)}
                         >
-                          {processingOrder === order.id ? "Processing..." : "Pay Now"}
+                          {processingOrder === String(order.id) ? "Processing..." : "Pay Now"}
                         </Button>
                       </div>
                     )}

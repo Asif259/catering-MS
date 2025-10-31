@@ -27,7 +27,7 @@ export default function PaymentPage() {
         return;
       }
 
-      const currentOrder = orders.find(o => o.id === orderId);
+      const currentOrder = orders.find(o => String(o.id) === orderId);
       if (!currentOrder) {
         toast.error("Order not found");
         router.push("/orders");
@@ -53,7 +53,7 @@ export default function PaymentPage() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Update order status
-      await updateOrderStatus(order.id, "paid");
+      await updateOrderStatus(String(order.id), "completed");
       
       toast.success("Payment simulation completed successfully!");
       router.push("/orders");
