@@ -32,7 +32,6 @@ export default function OrdersPage() {
         }
 
         loadOrders();
-        console.log("Orders loaded:", orders); // Debug log
       } catch (error: any) {
         toast.error(error.message);
       } finally {
@@ -44,14 +43,12 @@ export default function OrdersPage() {
   }, [checkAuth, router, loadOrders]);
 
   const handleCancelOrder = async (orderId: string) => {
-    console.log("Cancelling order:", orderId); // Debug log
     try {
       setProcessingOrder(orderId);
       await cancelOrder(orderId);
       toast.success("Order cancelled successfully");
       loadOrders(); // Reload orders after cancellation
     } catch (error: any) {
-      console.error("Error cancelling order:", error); // Debug log
       toast.error(error.message || "Failed to cancel order");
     } finally {
       setProcessingOrder(null);
@@ -59,13 +56,11 @@ export default function OrdersPage() {
   };
 
   const handlePayNow = async (orderId: string) => {
-    console.log("Processing payment for order:", orderId); // Debug log
     try {
       setProcessingOrder(orderId);
       await updateOrderStatus(orderId, "processing");
       router.push(`/payment?orderId=${orderId}`);
     } catch (error: any) {
-      console.error("Error processing payment:", error); // Debug log
       toast.error(error.message || "Failed to process payment");
       setProcessingOrder(null);
     }
@@ -105,8 +100,6 @@ export default function OrdersPage() {
     );
   }
 
-  console.log("Rendering orders:", orders); // Debug log
-
   return (
     <>
       <Navbar />
@@ -127,7 +120,7 @@ export default function OrdersPage() {
                 <CardHeader>
                   <div className="flex justify-between items-center">
                     <CardTitle>Order #{order.id}</CardTitle>
-                    <Badge variant={order.status === "pending" ? "default" : "success"}>
+                    <Badge variant={order.status === "pending" ? "default" : "secondary"}>
                       {order.status}
                     </Badge>
                   </div>
