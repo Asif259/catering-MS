@@ -80,21 +80,13 @@ const PasswordResetModal = ({ isOpen, onClose }: PasswordResetModalProps) => {
     confirmPassword: string;
   }) => {
     setIsLoading(true);
-    try {
-      await api.post("/auth/reset-password", {
-        email,
-        password: values.password,
-      });
-      toast.success("Password reset successfully!");
-      onClose();
-      // Reset modal state
-      setCurrentStep("email");
-      setEmail("");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to reset password.");
-    } finally {
-      setIsLoading(false);
-    }
+    // Password reset functionality is disabled
+    toast.error("Password reset feature is currently unavailable.");
+    setIsLoading(false);
+    // Reset modal state
+    setCurrentStep("email");
+    setEmail("");
+    onClose();
   };
 
   const handleClose = () => {
