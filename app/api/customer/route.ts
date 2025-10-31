@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { users } from '../auth/register/route';
+import { users } from '../auth/users';
 
 // In a real app, this would be in a database
 // Customers are created dynamically from registered users

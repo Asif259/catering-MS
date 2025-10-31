@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { otpStore } from '../send-otp/route';
-
-// In-memory user store for demo
-const users: any[] = [];
+import { users } from '../users';
 
 export async function POST(request: Request) {
   try {
@@ -32,7 +30,4 @@ export async function POST(request: Request) {
     console.error('Error registering user:', error);
     return NextResponse.json({ message: 'Failed to register.' }, { status: 500 });
   }
-}
-
-// For demo: export users
-export { users }; 
+} 

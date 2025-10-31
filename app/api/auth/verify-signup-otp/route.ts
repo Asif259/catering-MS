@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { otpStore } from '../send-otp/route';
-import { users } from '../register/route';
+import { users } from '../users';
 
 export async function POST(request: Request) {
   try {
