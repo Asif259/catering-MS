@@ -29,6 +29,9 @@ function getOrCreateCustomer(email: string, name: string) {
   return customer;
 }
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function GET(request: Request) {
   try {
     // Get email from query parameter

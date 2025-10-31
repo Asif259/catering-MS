@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { clearCartStorage } from '@/lib/cart-storage';
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function DELETE() {
   try {
     clearCartStorage();

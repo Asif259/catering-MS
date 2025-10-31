@@ -112,6 +112,9 @@ const menuItems: MenuItem[] = [
   }
 ];
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function GET(request: Request) {
   // Get the search parameter if it exists
   const { searchParams } = new URL(request.url);

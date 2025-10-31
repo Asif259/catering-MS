@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 // In a real app, this would be in a database
 let orders: any[] = [];
 
