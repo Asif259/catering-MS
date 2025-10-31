@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const CustomerPage = () => {
   const router = useRouter();
-  const { isLoggedIn, login, logout } = useAuthStore();
+  const { isLoggedIn, checkAuth, logout } = useAuthStore();
   const [customer, setCustomer] = useState({
     id: "",
     name: "",
@@ -31,12 +31,10 @@ const CustomerPage = () => {
   });
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const validateAuth = async () => {
       try {
-        const response = await api.get("/auth/validate");
-        if (response) {
-          login();
-        } else {
+        const isAuthenticated = await checkAuth();
+        if (!isAuthenticated) {
           logout();
           router.push("/auth/signin");
         }
@@ -69,9 +67,9 @@ const CustomerPage = () => {
       }
     };
 
-    checkAuth().then(r => r);
+    validateAuth().then(r => r);
     fetchCustomerDetails().then(r => r);
-  }, [login, logout, router]);
+  }, [checkAuth, logout, router]);
 
   const handleEditClick = () => {
     setIsEditing(true);
