@@ -1,14 +1,15 @@
-import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
-
-// In-memory store for OTPs (for demo; use a DB in production)
-const otpStore: { [email: string]: { otp: string; expires: number } } = {};
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+import { otpStore } from "../otp-store";
 
 export async function POST(request: Request) {
   try {
     const { email } = await request.json();
     if (!email) {
-      return NextResponse.json({ message: 'Email is required.' }, { status: 400 });
+      return NextResponse.json(
+        { message: "Email is required." },
+        { status: 400 }
+      );
     }
 
     // Generate 6-digit OTP
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
 
     // For demo purposes, log the OTP instead of sending email
     console.log(`OTP for ${email}: ${otp}`);
-    
+
     // Uncomment the following code when you have SMTP credentials
     /*
     // Configure nodemailer
@@ -42,12 +43,12 @@ export async function POST(request: Request) {
     });
     */
 
-    return NextResponse.json({ message: 'OTP sent successfully.' });
+    return NextResponse.json({ message: "OTP sent successfully." });
   } catch (error) {
-    console.error('Error sending OTP:', error);
-    return NextResponse.json({ message: 'Failed to send OTP.' }, { status: 500 });
+    console.error("Error sending OTP:", error);
+    return NextResponse.json(
+      { message: "Failed to send OTP." },
+      { status: 500 }
+    );
   }
 }
-
-// For demo: export the store for use in verify-otp
-export { otpStore }; 
