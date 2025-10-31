@@ -58,10 +58,12 @@ export default function OrdersPage() {
   const handlePayNow = async (orderId: string) => {
     try {
       setProcessingOrder(orderId);
-      await updateOrderStatus(orderId, "processing");
-      router.push(`/payment?orderId=${orderId}`);
+      await updateOrderStatus(orderId, "completed");
+      toast.success("Order payment completed successfully!");
+      loadOrders();
     } catch (error: any) {
       toast.error(error.message || "Failed to process payment");
+    } finally {
       setProcessingOrder(null);
     }
   };
