@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { otpStore } from "../otp-store";
 import { users } from "../users";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   try {
     const { email, otp } = await request.json();
