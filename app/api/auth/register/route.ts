@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { otpStore } from "../otp-store";
 import { users } from "../users";
 
 export const dynamic = "force-dynamic";
@@ -23,19 +22,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Store user as unverified
-    users.push({ name, email, password, verified: false });
-
-    // Generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expires = Date.now() + 10 * 60 * 1000;
-    otpStore[email] = { otp, expires };
-
-    // For demo purposes, log the OTP
-    console.log(`Registration OTP for ${email}: ${otp}`);
+    // Store user as verified (no OTP verification needed)
+    users.push({ name, email, password, verified: true });
 
     return NextResponse.json({
-      message: "Registration successful. OTP sent to email.",
+      message: "Registration successful. You can now sign in.",
     });
   } catch (error) {
     console.error("Error registering user:", error);

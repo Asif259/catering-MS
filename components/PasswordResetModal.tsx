@@ -50,29 +50,18 @@ const PasswordResetModal = ({ isOpen, onClose }: PasswordResetModalProps) => {
 
   const handleEmailSubmit = async (values: { email: string }) => {
     setIsLoading(true);
-    try {
-      await api.post("/auth/send-otp", { email: values.email });
-      setEmail(values.email);
-      setCurrentStep("otp");
-      toast.success("OTP sent to your email!");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to send OTP.");
-    } finally {
-      setIsLoading(false);
-    }
+    // OTP functionality is disabled
+    toast.error("Password reset feature is currently unavailable.");
+    setIsLoading(false);
+    onClose();
   };
 
   const handleOtpSubmit = async (values: { otp: string }) => {
     setIsLoading(true);
-    try {
-      await api.post("/auth/verify-otp", { email, otp: values.otp });
-      setCurrentStep("password");
-      toast.success("OTP verified successfully!");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Invalid OTP.");
-    } finally {
-      setIsLoading(false);
-    }
+    // OTP functionality is disabled
+    toast.error("Password reset feature is currently unavailable.");
+    setIsLoading(false);
+    onClose();
   };
 
   const handlePasswordSubmit = async (values: {
@@ -123,11 +112,7 @@ const PasswordResetModal = ({ isOpen, onClose }: PasswordResetModalProps) => {
                     <p className="text-sm text-red-500">{errors.email}</p>
                   )}
                 </div>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isLoading}
-                >
+                <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Sending OTP..." : "Send OTP"}
                 </Button>
               </Form>
@@ -163,11 +148,7 @@ const PasswordResetModal = ({ isOpen, onClose }: PasswordResetModalProps) => {
                     We've sent a 6-digit code to {email}
                   </p>
                 </div>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isLoading}
-                >
+                <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Verifying..." : "Verify OTP"}
                 </Button>
                 <Button
@@ -217,14 +198,12 @@ const PasswordResetModal = ({ isOpen, onClose }: PasswordResetModalProps) => {
                     placeholder="Confirm new password"
                   />
                   {errors.confirmPassword && touched.confirmPassword && (
-                    <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+                    <p className="text-sm text-red-500">
+                      {errors.confirmPassword}
+                    </p>
                   )}
                 </div>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isLoading}
-                >
+                <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Resetting..." : "Reset Password"}
                 </Button>
                 <Button
@@ -283,4 +262,4 @@ const PasswordResetModal = ({ isOpen, onClose }: PasswordResetModalProps) => {
   );
 };
 
-export default PasswordResetModal; 
+export default PasswordResetModal;
