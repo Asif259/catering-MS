@@ -1,25 +1,27 @@
-import api from "@/api/api";
+import { localStorageService } from "@/services/localStorage";
 
 // Fetch menu data
 export const fetchMenuData = async () => {
   try {
-    const response = await api.get("/menu");
-    return response.data;
+    const menu = await localStorageService.getMenu();
+    return menu;
   } catch (err: any) {
-    throw new Error(err.response?.data?.message || "Failed to fetch menu data");
+    throw new Error(err.message || "Failed to fetch menu data");
   }
 };
 
 // Search menu items
 export const searchMenuItems = async (searchTerm: string) => {
   try {
-    const response = await api.get(`/menu?name=${encodeURIComponent(searchTerm)}`);
-    return response.data;
+    const menu = await localStorageService.searchMenu(searchTerm);
+    return menu;
+
   } catch (err: any) {
     throw new Error(
-      err.response?.data?.message || "Error searching menu items"
+      err.message || "Error searching menu items"
     );
   }
 };
 
-export default api;
+export default localStorageService; // Exporting service instead of axios instance if needed, or just remove default export
+

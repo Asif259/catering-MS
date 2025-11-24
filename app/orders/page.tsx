@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader";
 import { format } from "date-fns";
+import { FaShoppingBag, FaCheckCircle, FaClock } from "react-icons/fa";
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -47,7 +48,7 @@ export default function OrdersPage() {
       setProcessingOrder(orderId);
       await cancelOrder(orderId);
       toast.success("Order cancelled successfully");
-      loadOrders(); // Reload orders after cancellation
+      loadOrders();
     } catch (error: any) {
       toast.error(error.message || "Failed to cancel order");
     } finally {
@@ -72,18 +73,18 @@ export default function OrdersPage() {
     return (
       <>
         <Navbar />
-        <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
-          <Card className="w-full max-w-md mx-4">
+        <div className="flex justify-center items-center min-h-[calc(100vh-200px)] bg-gradient-to-br from-slate-50 to-slate-100">
+          <Card className="w-full max-w-md mx-4 shadow-xl animate-fade-in">
             <CardContent className="pt-6">
-              <p className="text-center mb-4">
+              <p className="text-center mb-4 text-gray-700">
                 Please log in to view your orders.
               </p>
-              <button
-                className="w-full bg-primary text-white py-2 rounded hover:bg-primary/90"
+              <Button
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white transform transition-all duration-300 hover:scale-105"
                 onClick={() => router.push("/auth/signin")}
               >
                 Sign In
-              </button>
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -105,78 +106,118 @@ export default function OrdersPage() {
   return (
     <>
       <Navbar />
-      <main className="container mx-auto px-4 py-8 min-h-[calc(100vh-200px)]">
-        <h1 className="text-3xl font-bold mb-8">Your Orders</h1>
-        {orders.length === 0 ? (
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-center text-gray-500">
-                You haven't placed any orders yet.
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-6">
-            {orders.map((order) => (
-              <Card key={order.id}>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <CardTitle>Order #{order.id}</CardTitle>
-                    <Badge variant={order.status === "pending" ? "default" : "secondary"}>
-                      {order.status}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-500">
-                    Placed on {format(new Date(order.createdAt), "PPpp")}
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {order.items.map((item, index) => (
-                      <div key={index}>
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="font-medium">{item.menuItemId}</p>
-                            <p className="text-sm text-gray-500">
-                              Quantity: {item.quantity}
+      <main className="min-h-[calc(100vh-200px)] bg-gradient-to-br from-slate-50 to-slate-100 py-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+          {/* Page Header */}
+          <div className="mb-8 animate-fade-in">
+            <div className="flex items-center gap-3 mb-2">
+              <FaShoppingBag className="text-primary text-3xl" />
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">Your Orders</h1>
+            </div>
+            <p className="text-gray-600 ml-12">Track and manage your catering orders</p>
+          </div>
+
+          {orders.length === 0 ? (
+            <Card className="shadow-lg animate-fade-in animation-delay-200">
+              <CardContent className="pt-12 pb-12 text-center">
+                <FaShoppingBag className="text-gray-300 text-6xl mx-auto mb-4" />
+                <p className="text-gray-500 text-lg mb-4">
+                  You haven't placed any orders yet.
+                </p>
+                <Button
+                  onClick={() => router.push("/home")}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white transform transition-all duration-300 hover:scale-105"
+                >
+                  Browse Menu
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-6">
+              {orders.map((order, index) => (
+                <Card 
+                  key={order.id} 
+                  className="shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                      <div>
+                        <CardTitle className="text-xl flex items-center gap-2">
+                          <FaShoppingBag className="text-primary" />
+                          Order #{order.id}
+                        </CardTitle>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Placed on {format(new Date(order.createdAt), "PPpp")}
+                        </p>
+                      </div>
+                      <Badge 
+                        variant={order.status === "pending" ? "default" : "secondary"}
+                        className={`flex items-center gap-1 px-3 py-1 ${
+                          order.status === "completed" 
+                            ? "bg-green-100 text-green-800 hover:bg-green-100" 
+                            : "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
+                        }`}
+                      >
+                        {order.status === "completed" ? (
+                          <FaCheckCircle className="w-3 h-3" />
+                        ) : (
+                          <FaClock className="w-3 h-3" />
+                        )}
+                        {order.status}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <div className="space-y-4">
+                      {order.items.map((item, index) => (
+                        <div key={index}>
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-medium text-gray-800">{item.menuItemId}</p>
+                              <p className="text-sm text-gray-500">
+                                Quantity: {item.quantity}
+                              </p>
+                            </div>
+                            <p className="font-semibold text-primary">
+                              ${(item.price * item.quantity).toFixed(2)}
                             </p>
                           </div>
-                          <p className="font-medium">
-                            ${(item.price * item.quantity).toFixed(2)}
-                          </p>
+                          {index < order.items.length - 1 && (
+                            <Separator className="my-4" />
+                          )}
                         </div>
-                        {index < order.items.length - 1 && (
-                          <Separator className="my-4" />
-                        )}
+                      ))}
+                      <div className="flex justify-between items-center pt-4 border-t-2 border-primary/20">
+                        <p className="font-bold text-lg text-gray-800">Total</p>
+                        <p className="font-bold text-xl text-primary">${order.total.toFixed(2)}</p>
                       </div>
-                    ))}
-                    <div className="flex justify-between items-center pt-4 border-t">
-                      <p className="font-bold">Total</p>
-                      <p className="font-bold">${order.total.toFixed(2)}</p>
+                      {order.status === "pending" && (
+                        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6 pt-4 border-t">
+                          <Button
+                            variant="outline"
+                            onClick={() => handleCancelOrder(String(order.id))}
+                            disabled={processingOrder === String(order.id)}
+                            className="transition-all duration-300 hover:scale-105"
+                          >
+                            {processingOrder === String(order.id) ? "Cancelling..." : "Cancel Order"}
+                          </Button>
+                          <Button
+                            onClick={() => handlePayNow(String(order.id))}
+                            disabled={processingOrder === String(order.id)}
+                            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white transition-all duration-300 hover:scale-105"
+                          >
+                            {processingOrder === String(order.id) ? "Processing..." : "Pay Now"}
+                          </Button>
+                        </div>
+                      )}
                     </div>
-                    {order.status === "pending" && (
-                      <div className="flex justify-end gap-4 mt-4">
-                        <Button
-                          variant="outline"
-                          onClick={() => handleCancelOrder(String(order.id))}
-                          disabled={processingOrder === String(order.id)}
-                        >
-                          {processingOrder === String(order.id) ? "Cancelling..." : "Cancel Order"}
-                        </Button>
-                        <Button
-                          onClick={() => handlePayNow(String(order.id))}
-                          disabled={processingOrder === String(order.id)}
-                        >
-                          {processingOrder === String(order.id) ? "Processing..." : "Pay Now"}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </main>
       <Footer />
     </>

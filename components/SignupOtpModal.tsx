@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
-import api from "@/api/api";
+import { localStorageService } from "@/services/localStorage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,12 +31,12 @@ const SignupOtpModal = ({ isOpen, onClose, email }: SignupOtpModalProps) => {
   const handleOtpSubmit = async (values: { otp: string }) => {
     setIsLoading(true);
     try {
-      await api.post("/auth/verify-signup-otp", { email, otp: values.otp });
+      await localStorageService.verifyOtp(email, values.otp);
       toast.success("Account verified successfully! Please sign in.");
       onClose();
       router.push("/auth/signin");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Invalid OTP.");
+      toast.error(error.message || "Invalid OTP.");
     } finally {
       setIsLoading(false);
     }
@@ -45,10 +45,10 @@ const SignupOtpModal = ({ isOpen, onClose, email }: SignupOtpModalProps) => {
   const handleResendOtp = async () => {
     setIsLoading(true);
     try {
-      await api.post("/auth/send-otp", { email });
+      await localStorageService.requestOtp(email);
       toast.success("OTP resent successfully!");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to resend OTP.");
+      toast.error(error.message || "Failed to resend OTP.");
     } finally {
       setIsLoading(false);
     }
@@ -127,4 +127,4 @@ const SignupOtpModal = ({ isOpen, onClose, email }: SignupOtpModalProps) => {
   );
 };
 
-export default SignupOtpModal; 
+export default SignupOtpModal;

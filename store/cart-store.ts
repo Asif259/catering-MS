@@ -89,46 +89,34 @@ export const useCartStore = create<CartState>((set, get) => ({
     try {
       const response = await addToCartAPI(menuId, quantity);
       
-      // If API returns updated cart, use it to sync state
-      if (response?.data?.cart?.items && response.data.cart.items.length > 0) {
-        const items: CartItem[] = response.data.cart.items.map((item: any, index: number) => ({
-          id: item.id || index + 1,
-          menuId: item.menuId || menuId,
-          name: item.name || menuItem.name,
-          price: item.price || menuItem.price,
-          quantity: item.quantity || quantity,
-          image: item.image || menuItem.image,
-        }));
-        set({ items });
-      } else {
-        // Fallback: Update local state if API doesn't return cart
-        set((state) => {
-          const existingItemIndex = state.items.findIndex(
-            (item) => item.menuId === menuId
-          );
+      // Always update local state since we are using LocalStorage
+      set((state) => {
+        const existingItemIndex = state.items.findIndex(
+          (item) => item.menuId === menuId
+        );
 
-          if (existingItemIndex !== -1) {
-            // Item exists, update quantity
-            const updatedItems = [...state.items];
-            updatedItems[existingItemIndex] = {
-              ...updatedItems[existingItemIndex],
-              quantity: updatedItems[existingItemIndex].quantity + quantity,
-            };
-            return { items: updatedItems };
-          } else {
-            // New item, add to cart
-            const newItem: CartItem = {
-              id: Date.now(), // Temporary ID
-              menuId,
-              name: menuItem.name,
-              price: menuItem.price,
-              quantity,
-              image: menuItem.image,
-            };
-            return { items: [...state.items, newItem] };
-          }
-        });
-      }
+        if (existingItemIndex !== -1) {
+          // Item exists, update quantity
+          const updatedItems = [...state.items];
+          updatedItems[existingItemIndex] = {
+            ...updatedItems[existingItemIndex],
+            quantity: updatedItems[existingItemIndex].quantity + quantity,
+          };
+          return { items: updatedItems };
+        } else {
+          // New item, add to cart
+          const newItem: CartItem = {
+            id: Date.now(), // Temporary ID
+            menuId,
+            name: menuItem.name,
+            price: menuItem.price,
+            quantity,
+            image: menuItem.image,
+          };
+          return { items: [...state.items, newItem] };
+        }
+      });
+
     } catch (error) {
       console.error("Failed to add to cart:", error);
       throw error;

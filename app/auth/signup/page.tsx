@@ -55,7 +55,7 @@ const SignUp = () => {
     setIsLoading(true);
     try {
       const { confirmPassword, ...userData } = values;
-      const success = register(
+      const success = await register(
         { name: userData.name, email: userData.email },
         userData.password
       );
@@ -82,8 +82,8 @@ const SignUp = () => {
           {/* Left Section - Hero Image */}
           <div className="w-1/2 relative hidden lg:block">
             <Image
-              src="/images/loginBg.png"
-              alt="Culinary Odyssey Background"
+              src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+              alt="Culinary Odyssey - Fine Dining"
               className="object-cover"
               fill
               priority

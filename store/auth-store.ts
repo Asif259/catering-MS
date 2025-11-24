@@ -1,27 +1,19 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import api from "@/api/api";
+import { localStorageService } from "@/services/localStorage";
 
 interface AuthState {
   isLoggedIn: boolean;
   user: { email: string; name: string } | null;
   checkAuth: () => Promise<boolean>;
-  validateCredentials: (email: string, password: string) => boolean;
+  validateCredentials: (email: string, password: string) => Promise<boolean>;
   register: (
     userData: { name: string; email: string },
     password: string
-  ) => boolean;
+  ) => Promise<boolean>;
   logout: () => void;
   setUser: (user: { email: string; name: string } | null) => void;
 }
-
-// In-memory user store (in a real app, this would be in a database)
-const users: Array<{
-  email: string;
-  name: string;
-  password: string;
-  verified: boolean;
-}> = [];
 
 const useAuthStore = create<AuthState>()(
   persist(
@@ -45,43 +37,37 @@ const useAuthStore = create<AuthState>()(
         }
       },
 
-      validateCredentials: (email: string, password: string) => {
-        // Check if user exists and password matches
-        const user = users.find(
-          (u) => u.email === email && u.password === password && u.verified
-        );
-
-        if (user) {
-          const userData = { email: user.email, name: user.name };
-          localStorage.setItem("auth_user", JSON.stringify(userData));
-          set({ isLoggedIn: true, user: userData });
-          return true;
+      validateCredentials: async (email: string, password: string) => {
+        try {
+          const response = await localStorageService.login(email);
+          if (response && response.user) {
+             const userData = { email: response.user.email, name: response.user.name };
+             localStorage.setItem("auth_user", JSON.stringify(userData));
+             set({ isLoggedIn: true, user: userData });
+             return true;
+          }
+          return false;
+        } catch (error) {
+          console.error("Login failed:", error);
+          return false;
         }
-        return false;
       },
 
-      register: (
+      register: async (
         userData: { name: string; email: string },
         password: string
       ) => {
-        // Check if email already exists
-        if (users.find((u) => u.email === userData.email)) {
+        try {
+          await localStorageService.signup({ ...userData, password });
+          return true;
+        } catch (error) {
+          console.error("Registration failed:", error);
           return false;
         }
-
-        // Add user (unverified - would need OTP verification in real app)
-        // For demo, we'll mark as verified
-        users.push({
-          email: userData.email,
-          name: userData.name,
-          password,
-          verified: true,
-        });
-
-        return true;
       },
 
       logout: () => {
+        localStorageService.logout();
         localStorage.removeItem("auth_user");
         set({ isLoggedIn: false, user: null });
       },
@@ -101,3 +87,4 @@ const useAuthStore = create<AuthState>()(
 );
 
 export default useAuthStore;
+

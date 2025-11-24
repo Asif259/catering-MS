@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import useAuthStore from "@/store/auth-store";
-import api from "@/api/api";
+import { localStorageService } from "@/services/localStorage";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,7 +33,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await api.get("/auth/logout");
+      await localStorageService.logout();
       logout();
     } catch {
       console.log("Failed to logout");
@@ -51,10 +51,8 @@ const Navbar = () => {
           const storedUser = localStorage.getItem("auth_user");
           if (storedUser) {
             const user = JSON.parse(storedUser);
-            const response = await api.get(
-              `/customer?email=${encodeURIComponent(user.email)}`
-            );
-            setCustomer(response.data);
+            const data = await localStorageService.getCustomer(user.email);
+            setCustomer(data);
           }
         } else {
           setCustomer(null);
@@ -78,6 +76,7 @@ const Navbar = () => {
 
     fetchCustomerData();
   }, [checkAuth]);
+
 
   // Don't render authentication-dependent content until we've checked auth status
   if (isLoading) {

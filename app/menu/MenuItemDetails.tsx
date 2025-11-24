@@ -149,7 +149,7 @@ export default function MenuItemDetails({ menuItem }: { menuItem: MenuItem }) {
       const response = await order(orderItems);
 
       // Add order to store
-      addOrder(response.data.order);
+      addOrder(response.data);
 
       toast.success("Order placed successfully!");
       router.push("/orders");
@@ -177,7 +177,7 @@ export default function MenuItemDetails({ menuItem }: { menuItem: MenuItem }) {
           {/* Image Section - 1:1 Ratio */}
           <div className="relative aspect-square w-full max-w-lg mx-auto md:mx-0">
             <Image
-              src={`/images/${menuItem.image}`}
+              src={menuItem.image.startsWith("http") ? menuItem.image : `/images/${menuItem.image}`}
               alt={menuItem.name}
               fill
               className="object-cover rounded-lg"

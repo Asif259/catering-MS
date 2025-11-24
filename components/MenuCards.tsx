@@ -29,7 +29,7 @@ export default function MenuCards({ cards }: FoodCardsProps) {
           >
             <div className="relative h-48 w-full">
               <Image
-                src={`/images/${card.image}`}
+                src={card.image.startsWith("http") ? card.image : `/images/${card.image}`}
                 alt={card.name || "Menu Item Image"}
                 fill
                 className="object-cover"

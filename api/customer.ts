@@ -1,9 +1,9 @@
-import api from "@/api/api";
+import { localStorageService } from "@/services/localStorage";
 
 export const fetchCustomerData = async (email: string) => {
   try {
-    const response = await api.get(`/customer?email=${encodeURIComponent(email)}`);
-    return response.data;
+    const customer = await localStorageService.getCustomer(email);
+    return customer;
   } catch (error) {
     console.error("Failed to fetch customer data:", error);
     throw new Error("Failed to fetch customer data");
@@ -12,10 +12,10 @@ export const fetchCustomerData = async (email: string) => {
 
 export const updateCustomerData = async (email: string, data: any) => {
   try {
-    const response = await api.patch(`/customer?email=${encodeURIComponent(email)}`, data);
-    return response.data;
+    const customer = await localStorageService.updateCustomer(email, data);
+    return customer;
   } catch (error) {
     console.error("Failed to update customer data:", error);
     throw new Error("Failed to update customer data");
   }
-}; 
+};

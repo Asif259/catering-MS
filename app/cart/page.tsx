@@ -112,12 +112,12 @@ export default function CartPage() {
 
       const response = await order(orderItems);
 
-      if (!response || !response.data || !response.data.order) {
+      if (!response || !response.data) {
         throw new Error("Failed to place order or invalid response");
       }
 
       // Add order to store
-      addOrder(response.data.order);
+      addOrder(response.data);
 
       // Clear selected items from cart
       setItems(items.filter((item) => !selectedItems.has(item.id)));
@@ -241,7 +241,7 @@ export default function CartPage() {
                             className="mt-1"
                           />
                           <Image
-                            src={`/images/${item.image}`}
+                            src={item.image.startsWith("http") ? item.image : `/images/${item.image}` }
                             alt={item.name}
                             width={80}
                             height={80}

@@ -2,7 +2,7 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import CustomModal from "./CustomModal";
-import api from "@/api/api";
+import { localStorageService } from "@/services/localStorage";
 import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,20 +34,17 @@ const ResetPassword = ({
 
   const handleResetPassword = async (password: string, confirmPassword: string) => {
     try {
-      const response = await api.post("/auth/reset-password", {
-        email,
-        password,
-        confirmPassword,
-      });
-      toast.success(response.data.message || "Password reset successfully!");
+      await localStorageService.resetPassword(email);
+      toast.success("Password reset successfully!");
       onSubmit();
       onClose();
     } catch (error: any) {
       toast.error(
-          error.response?.data?.message || "Failed to reset the password."
+          error.message || "Failed to reset the password."
       );
     }
   };
+
 
   return (
       <CustomModal isOpen={isOpen} onClose={onClose} title="Reset Password">

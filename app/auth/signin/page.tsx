@@ -47,7 +47,7 @@ const SignIn = () => {
     setIsLoading(true);
     const { email, password } = values;
     try {
-      const isValid = validateCredentials(email, password);
+      const isValid = await validateCredentials(email, password);
       if (isValid) {
         toast.success("Login successful!");
         router.push("/");
@@ -206,8 +206,8 @@ const SignIn = () => {
         {/* Right Section - Hero Image */}
         <div className="w-1/2 relative hidden lg:block">
           <Image
-            src="/images/loginBg.png"
-            alt="Culinary Odyssey Background"
+            src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+            alt="Culinary Odyssey - Delicious Food"
             className="object-cover"
             fill
             priority

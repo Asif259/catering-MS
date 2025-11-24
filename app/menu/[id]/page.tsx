@@ -1,59 +1,34 @@
-"use client";
 import { notFound } from "next/navigation";
 import { fetchMenuItem } from "@/api/menu";
 import MenuItemDetails from "../MenuItemDetails";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useEffect, useState } from "react";
-import { MenuItem } from "@/types/types";
-import Loader from "./../../../components/Loader";
 
-export default function MenuItemPage({
+// This function generates static params for all menu items at build time
+// We hardcode the IDs since localStorage is not available during build
+export async function generateStaticParams() {
+  // These IDs match the initial menu items in localStorage service
+  return Array.from({ length: 36 }, (_, i) => ({ id: String(i + 1) }));
+}
+
+export default async function MenuItemPage({
   params,
 }: {
   params: Promise<{ id: string }> | { id: string };
 }) {
-  const [menuItem, setMenuItem] = useState<MenuItem | null>(null);
-  const [id, setId] = useState<string | null>(null);
+  // Await params if it's a Promise
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const { id } = resolvedParams;
 
-  useEffect(() => {
-    // Handle both Promise and direct object cases
-    const getParams = async () => {
-      if (params instanceof Promise) {
-        const resolvedParams = await params;
-        setId(resolvedParams.id);
-      } else {
-        setId(params.id);
-      }
-    };
-    getParams();
-  }, [params]);
-
-  useEffect(() => {
-    if (!id) return;
-
-    async function fetchData() {
-      try {
-        const fetchedMenuItem = await fetchMenuItem(id as string);
-        if (!fetchedMenuItem) {
-          notFound();
-        } else {
-          setMenuItem(fetchedMenuItem);
-        }
-      } catch (error) {
-        console.error("Failed to fetch menu item:", error);
-        notFound();
-      }
+  let menuItem;
+  try {
+    menuItem = await fetchMenuItem(id);
+    if (!menuItem) {
+      notFound();
     }
-    fetchData();
-  }, [id]);
-
-  if (!menuItem) {
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
+  } catch (error) {
+    console.error("Failed to fetch menu item:", error);
+    notFound();
   }
 
   return (
